@@ -3,14 +3,10 @@ package com.library;
 import java.util.Objects;
 
 public class Person {
-    private final String firstName;
-    private final  String lastName;
+    private final String name;
 
-    private int numberOfBorrowedBooks;
-
-    public Person(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Person(String name) {
+        this.name = name;
     }
 
     @Override
@@ -20,13 +16,17 @@ public class Person {
             return false;
         }
         Person person = (Person) o;
-
-        return Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName);
+        return Objects.equals(name, person.name);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName);
+    public int hashCode() {return Objects.hash(name);}
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }
 
