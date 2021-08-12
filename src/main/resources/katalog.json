@@ -1,58 +1,9 @@
 [
   {
-    "title": "Diuna",
-    "author": "Herbert Frank",
-    "isbn": "978-83-7301-723-8",
-    "lastBorrowedDate": "2017-03-15",
-    "borrower": "Daria"
-  },
-  {
-    "title": "Mesjasz Diuny",
-    "author": "Herbert Frank",
-    "isbn": "978-83-7301-725-2",
-    "lastBorrowedDate": "2018-05-03",
-    "borrower": "Daria"
-  },
-  {
-    "title": "Limes Inferior",
-    "author": "Zajdel Janusz A.",
-    "isbn": "978-83-7578-026-0",
-    "lastBorrowedDate": "2018-05-17",
-    "borrower": "Czarnota Urszula"
-  },
-  {
-    "title": "MaddAddam",
-    "author": "Atwood Margaret",
-    "isbn": "9780307455482",
-    "lastBorrowedDate": "2018-05-19",
-    "borrower": "Anna Maria"
-  },
-  {
-    "title": "Nineteen Eighty-four",
-    "author": "Orwell George",
-    "isbn": "9780141036144",
-    "lastBorrowedDate": "2018-05-20",
-    "borrower": "Alena"
-  },
-  {
-    "title": "A Brief History Of Time:From Big Bang To Black Holes",
-    "author": "Hawking Stephen",
-    "isbn": "9780857501004",
-    "lastBorrowedDate": "2018-05-20",
-    "borrower": "Lena"
-  },
-  {
-    "title": "The Colour of Magic",
-    "author": "Pratchett Terry",
-    "isbn": "9780552124751",
-    "lastBorrowedDate": "0001-01-01",
-    "borrower": "none"
-  },
-  {
-    "title": "Oryx And Crake",
-    "author": "Atwood Margaret",
-    "isbn": "0349004064",
-    "lastBorrowedDate": "2018-05-20",
-    "borrower": "Alena"
+    "title": "Potop",
+    "author": "Sienk",
+    "isbn": "1",
+    "lastBorrowedDate": "2021-08-12",
+    "borrower": "P S"
   }
 ]

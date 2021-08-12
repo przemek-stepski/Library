@@ -1,8 +1,12 @@
 package com.library;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static java.time.LocalDate.*;
 
 public class BookManager {
     protected Book createBook() {
@@ -106,4 +110,18 @@ public class BookManager {
         return listOfFoundBooks;
     }
 
+    protected boolean borrowBook() {
+        System.out.println("Type borrower name and lastname");
+        String borrower = UserInputScanner.scannerString();
+
+        List<Book> booksToBorrow = findBookByIsbn();
+        if (booksToBorrow.size() > 0) {
+            booksToBorrow.get(0).setBorrower(borrower);
+            booksToBorrow.get(0).setLastBorrowedDate(now().toString());
+            DataHandler.makeJsonFromList((ArrayList) booksToBorrow);
+            System.out.println("You have successfully borrowed a book!");
+            return true;
+        }
+        return false;
+    }
 }

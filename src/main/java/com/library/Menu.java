@@ -24,7 +24,7 @@ public class Menu {
 
     protected void executeCommand(String choice) {
         AppControler appControler = new AppControler();
-        BookManager bookManager  = new BookManager();
+        BookManager bookManager = new BookManager();
 
         switch (choice) {
             case "1":
@@ -51,6 +51,21 @@ public class Menu {
                 bookManager.findBookByIsbn();
                 appControler.toMenu();
                 break;
+
+//            case "6":
+//                bookManager.findBooksNotBorrowed();
+//                appControler.toMenu();
+//                break;
+
+            case "7":
+                bookManager.borrowBook();
+                appControler.toMenu();
+                break;
+
+//            case "8":
+//                bookManager.findListOfBorrowers();
+//                appControler.toMenu();
+//                break;
 
             case "Q":
                 System.out.println("You have successfully closed app. Thanks for using ;-)");

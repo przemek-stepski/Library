@@ -38,6 +38,14 @@ public class Book {
         return borrower;
     }
 
+    public void setLastBorrowedDate(String lastBorrowedDate) {
+        this.lastBorrowedDate = lastBorrowedDate;
+    }
+
+    public void setBorrower(String borrower) {
+        this.borrower = borrower;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
