@@ -1,12 +1,12 @@
 package com.library;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
-import static java.time.LocalDate.*;
+import static java.time.LocalDate.now;
 
 public class BookManager {
     protected Book createBook() {
@@ -114,14 +114,37 @@ public class BookManager {
         System.out.println("Type borrower name and lastname");
         String borrower = UserInputScanner.scannerString();
 
+        List<Book> booksList = DataHandler.makeListFromJson();
+
         List<Book> booksToBorrow = findBookByIsbn();
         if (booksToBorrow.size() > 0) {
-            booksToBorrow.get(0).setBorrower(borrower);
-            booksToBorrow.get(0).setLastBorrowedDate(now().toString());
-            DataHandler.makeJsonFromList((ArrayList) booksToBorrow);
-            System.out.println("You have successfully borrowed a book!");
-            return true;
+            for (Book b : booksList) {
+                if (booksToBorrow.get(0).equals(b)) {
+                    b.setBorrower(borrower);
+                    b.setLastBorrowedDate(now().toString());
+                    DataHandler.makeJsonFromList((ArrayList) booksList);
+                    System.out.println("You have successfully borrowed a book: " + booksToBorrow.get(0));
+                    return true;
+                }
+            }
         }
         return false;
+    }
+
+    protected void showBorrowers() {
+        List<Book> booksList = DataHandler.makeListFromJson();
+        List<String> allBorrowers = new ArrayList<>();
+
+        for (Book b: booksList) {
+            allBorrowers.add(b.getBorrower());
+        }
+        List<String> uniqueBorrowers = allBorrowers.stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        for (String borrower: uniqueBorrowers) {
+            int bookNumber = Collections.frequency(allBorrowers, borrower);
+        System.out.println("Borrower " + borrower + " has " + bookNumber + " books borrowed");
+        }
     }
 }

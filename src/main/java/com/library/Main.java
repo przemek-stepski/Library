@@ -10,14 +10,5 @@ public class Main {
         AppControler.pathToFile = UserInputScanner.scannerString();
         appControler.startApp(AppControler.pathToFile);
 
-
-//        DataHandler.makeListFromJson(appControler.pat);
-//        ArrayList booksList = (ArrayList) DataHandler.bookList;
-//
-//        Book book1 = new Book("Potop", "Sienkiewicz", "12");
-//        booksList.add(book1);
-//        System.out.println(booksList);
-//        DataHandler.makeJsonFromList(booksList);
-//        System.out.println(booksList);
     }
 }

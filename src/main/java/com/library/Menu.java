@@ -62,10 +62,10 @@ public class Menu {
                 appControler.toMenu();
                 break;
 
-//            case "8":
-//                bookManager.findListOfBorrowers();
-//                appControler.toMenu();
-//                break;
+            case "8":
+                bookManager.showBorrowers();
+                appControler.toMenu();
+                break;
 
             case "Q":
                 System.out.println("You have successfully closed app. Thanks for using ;-)");
