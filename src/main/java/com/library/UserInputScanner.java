@@ -7,4 +7,9 @@ public class UserInputScanner {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
+
+    public static int scannerInt() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextInt();
+    }
 }

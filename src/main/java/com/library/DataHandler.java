@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class DataHandler {
         Gson gson = new Gson();
 
         try (Reader reader = new FileReader(pathToFile)) {
-        Type bookListType = new TypeToken<ArrayList<Book>>() {}.getType();
+            Type bookListType = new TypeToken<ArrayList<Book>>() {
+            }.getType();
             bookList = gson.fromJson(reader, bookListType);
         } catch (IOException e) {
             System.out.println("Reading Json file error occurred " + e.getMessage());
@@ -39,6 +41,11 @@ public class DataHandler {
         } catch (IOException e) {
             System.out.println("Saving Json file error occurred " + e.getMessage());
         }
-
     }
+
+    public static LocalDate stringToDateParser(String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        return localDate;
+    }
+
 }

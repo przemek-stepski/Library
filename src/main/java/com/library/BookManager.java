@@ -1,12 +1,13 @@
 package com.library;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.time.LocalDate.now;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class BookManager {
     protected Book createBook() {
@@ -44,7 +45,6 @@ public class BookManager {
                     System.out.println("We have deleted: " + booksToDelete.get(0).toString());
                     return true;
                 }
-
             } else {
                 System.out.println("There is no book to delete");
                 return false;
@@ -110,6 +110,31 @@ public class BookManager {
         return listOfFoundBooks;
     }
 
+    protected List<Book> findBooksNotBorrowed() {
+        List<Book> listOfFoundBooks = new ArrayList<>();
+
+        System.out.println("We will find books not borrowed in recent weeks. Type a number of weeks and press Enter");
+        int numberOfWeeksGiven = UserInputScanner.scannerInt();
+        int numberOfDaysGiven = numberOfWeeksGiven * 7;
+
+        List<Book> listToFindBook = DataHandler.makeListFromJson();
+        for (Book b : listToFindBook) {
+            LocalDate borrowDate = DataHandler.stringToDateParser(b.getLastBorrowedDate());
+            long periodInDays = DAYS.between(borrowDate, now());
+            if (periodInDays >= numberOfDaysGiven) {
+                listOfFoundBooks.add(b);
+            }
+        }
+        if (listOfFoundBooks.size() > 0) {
+            System.out.println("We have such a books not borrowed within last " + numberOfWeeksGiven + " weeks");
+            System.out.println(listOfFoundBooks);
+        } else {
+            System.out.println("We do not have books not borrowed within last " + numberOfWeeksGiven + " weeks");
+        }
+        return listOfFoundBooks;
+    }
+
+
     protected boolean borrowBook() {
         System.out.println("Type borrower name and lastname");
         String borrower = UserInputScanner.scannerString();
@@ -135,16 +160,20 @@ public class BookManager {
         List<Book> booksList = DataHandler.makeListFromJson();
         List<String> allBorrowers = new ArrayList<>();
 
-        for (Book b: booksList) {
+        for (Book b : booksList) {
             allBorrowers.add(b.getBorrower());
         }
         List<String> uniqueBorrowers = allBorrowers.stream()
                 .distinct()
                 .collect(Collectors.toList());
 
-        for (String borrower: uniqueBorrowers) {
+        for (String borrower : uniqueBorrowers) {
             int bookNumber = Collections.frequency(allBorrowers, borrower);
-        System.out.println("Borrower " + borrower + " has " + bookNumber + " books borrowed");
+            if (bookNumber == 1) {
+                System.out.println("Borrower " + borrower + " borrowed " + bookNumber + " book");
+            } else {
+                System.out.println("Borrower " + borrower + " borrowed " + bookNumber + " books");
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.library;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class Book {
@@ -54,6 +53,7 @@ public class Book {
         Book book = (Book) o;
         return Objects.equals(title, book.title) && Objects.equals(author, book.author) && Objects.equals(isbn, book.isbn);
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(title, author, isbn);

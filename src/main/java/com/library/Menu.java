@@ -52,10 +52,10 @@ public class Menu {
                 appControler.toMenu();
                 break;
 
-//            case "6":
-//                bookManager.findBooksNotBorrowed();
-//                appControler.toMenu();
-//                break;
+            case "6":
+                bookManager.findBooksNotBorrowed();
+                appControler.toMenu();
+                break;
 
             case "7":
                 bookManager.borrowBook();
