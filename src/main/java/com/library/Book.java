@@ -13,7 +13,7 @@ public class Book {
         this.title = title;
         this.author = author;
         this.isbn = ISBN;
-        lastBorrowedDate = null;
+        lastBorrowedDate = "0000-01-01";
         borrower = null;
     }
 

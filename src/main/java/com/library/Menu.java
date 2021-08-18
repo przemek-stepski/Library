@@ -23,48 +23,49 @@ public class Menu {
     }
 
     protected void executeCommand(String choice) {
-        AppControler appControler = new AppControler();
-        BookManager bookManager = new BookManager();
+        AppController appController = new AppController();
+        BookRepository bookRepository = new BookRepository();
+        String path = AppController.pathToFile;
 
         switch (choice) {
             case "1":
-                bookManager.addBook();
-                appControler.toMenu();
+                bookRepository.addBook(path);
+                appController.toMenu();
                 break;
 
             case "2":
-                bookManager.deleteBook();
-                appControler.toMenu();
+                bookRepository.deleteBook(path);
+                appController.toMenu();
                 break;
 
             case "3":
-                bookManager.findBookByTitle();
-                appControler.toMenu();
+                bookRepository.findBookByTitle(path);
+                appController.toMenu();
                 break;
 
             case "4":
-                bookManager.findBookByAuthor();
-                appControler.toMenu();
+                bookRepository.findBookByAuthor(path);
+                appController.toMenu();
                 break;
 
             case "5":
-                bookManager.findBookByIsbn();
-                appControler.toMenu();
+                bookRepository.findBookByIsbn(path);
+                appController.toMenu();
                 break;
 
             case "6":
-                bookManager.findBooksNotBorrowed();
-                appControler.toMenu();
+                bookRepository.findBooksNotBorrowed(path);
+                appController.toMenu();
                 break;
 
             case "7":
-                bookManager.borrowBook();
-                appControler.toMenu();
+                bookRepository.borrowBook(path);
+                appController.toMenu();
                 break;
 
             case "8":
-                bookManager.showBorrowers();
-                appControler.toMenu();
+                bookRepository.showBorrowers(path);
+                appController.toMenu();
                 break;
 
             case "Q":
@@ -72,8 +73,7 @@ public class Menu {
                 break;
 
             default:
-                appControler.toMenu();
-
+                appController.toMenu();
         }
     }
 }

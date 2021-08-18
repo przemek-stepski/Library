@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import static java.time.LocalDate.now;
 import static java.time.temporal.ChronoUnit.DAYS;
 
-public class BookManager {
+public class BookRepository {
     protected Book createBook() {
         System.out.println("Type a book title and press Enter");
         String title = UserInputScanner.scannerString();
@@ -25,23 +25,23 @@ public class BookManager {
         return newBook;
     }
 
-    protected void addBook() {
-        List<Book> listToAddBook = DataHandler.makeListFromJson();
+    protected void addBook(String path) {
+        List<Book> listToAddBook = BookDAO.makeListFromJson(path);
         listToAddBook.add(createBook());
 
-        DataHandler.makeJsonFromList((ArrayList) listToAddBook);
+        BookDAO.makeJsonFromList((ArrayList) listToAddBook, path);
         System.out.println("You have successfully added a book!");
     }
 
-    protected boolean deleteBook() {
+    protected boolean deleteBook(String path) {
         System.out.println("We will delete the book with typed ISBN if we have one");
-        List<Book> listToDeleteBook = DataHandler.makeListFromJson();
-        List<Book> booksToDelete = findBookByIsbn();
+        List<Book> listToDeleteBook = BookDAO.makeListFromJson(path);
+        List<Book> booksToDelete = findBookByIsbn(path);
         for (Book b : listToDeleteBook) {
             if (booksToDelete.size() != 0) {
                 if (b.equals(booksToDelete.get(0))) {
                     listToDeleteBook.remove(b);
-                    DataHandler.makeJsonFromList((ArrayList) listToDeleteBook);
+                    BookDAO.makeJsonFromList((ArrayList) listToDeleteBook, path);
                     System.out.println("We have deleted: " + booksToDelete.get(0).toString());
                     return true;
                 }
@@ -53,12 +53,12 @@ public class BookManager {
         return false;
     }
 
-    protected List<Book> findBookByAuthor() {
+    protected List<Book> findBookByAuthor(String path) {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book author and press Enter");
         String author = UserInputScanner.scannerString();
-        List<Book> listToFindBook = DataHandler.makeListFromJson();
+        List<Book> listToFindBook = BookDAO.makeListFromJson(path);
         for (Book b : listToFindBook)
             if (b.getAuthor().equals(author)) {
                 listOfFoundBooks.add(b);
@@ -72,12 +72,12 @@ public class BookManager {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBookByTitle() {
+    protected List<Book> findBookByTitle(String path) {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book title and press Enter");
         String title = UserInputScanner.scannerString();
-        List<Book> listToFindBook = DataHandler.makeListFromJson();
+        List<Book> listToFindBook = BookDAO.makeListFromJson(path);
         for (Book b : listToFindBook)
             if (b.getTitle().equals(title)) {
                 listOfFoundBooks.add(b);
@@ -91,12 +91,12 @@ public class BookManager {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBookByIsbn() {
+    protected List<Book> findBookByIsbn(String path) {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book ISBN and press Enter");
         String isbn = UserInputScanner.scannerString();
-        List<Book> listToFindBook = DataHandler.makeListFromJson();
+        List<Book> listToFindBook = BookDAO.makeListFromJson(path);
         for (Book b : listToFindBook)
             if ((b.getIsbn().replaceAll("[- ]", "")).equals(isbn.replaceAll("[- ]", ""))) {
                 listOfFoundBooks.add(b);
@@ -110,16 +110,16 @@ public class BookManager {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBooksNotBorrowed() {
+    protected List<Book> findBooksNotBorrowed(String path) {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("We will find books not borrowed in recent weeks. Type a number of weeks and press Enter");
         int numberOfWeeksGiven = UserInputScanner.scannerInt();
         int numberOfDaysGiven = numberOfWeeksGiven * 7;
 
-        List<Book> listToFindBook = DataHandler.makeListFromJson();
+        List<Book> listToFindBook = BookDAO.makeListFromJson(path);
         for (Book b : listToFindBook) {
-            LocalDate borrowDate = DataHandler.stringToDateParser(b.getLastBorrowedDate());
+            LocalDate borrowDate = LocalDate.parse(b.getLastBorrowedDate());
             long periodInDays = DAYS.between(borrowDate, now());
             if (periodInDays >= numberOfDaysGiven) {
                 listOfFoundBooks.add(b);
@@ -135,19 +135,19 @@ public class BookManager {
     }
 
 
-    protected boolean borrowBook() {
+    protected boolean borrowBook(String path) {
         System.out.println("Type borrower name and lastname");
         String borrower = UserInputScanner.scannerString();
 
-        List<Book> booksList = DataHandler.makeListFromJson();
+        List<Book> booksList = BookDAO.makeListFromJson(path);
 
-        List<Book> booksToBorrow = findBookByIsbn();
+        List<Book> booksToBorrow = findBookByIsbn(path);
         if (booksToBorrow.size() > 0) {
             for (Book b : booksList) {
                 if (booksToBorrow.get(0).equals(b)) {
                     b.setBorrower(borrower);
                     b.setLastBorrowedDate(now().toString());
-                    DataHandler.makeJsonFromList((ArrayList) booksList);
+                    BookDAO.makeJsonFromList((ArrayList) booksList, path);
                     System.out.println("You have successfully borrowed a book: " + booksToBorrow.get(0));
                     return true;
                 }
@@ -156,8 +156,8 @@ public class BookManager {
         return false;
     }
 
-    protected void showBorrowers() {
-        List<Book> booksList = DataHandler.makeListFromJson();
+    protected List<String> showBorrowers(String path) {
+        List<Book> booksList = BookDAO.makeListFromJson(path);
         List<String> allBorrowers = new ArrayList<>();
 
         for (Book b : booksList) {
@@ -175,5 +175,5 @@ public class BookManager {
                 System.out.println("Borrower " + borrower + " borrowed " + bookNumber + " books");
             }
         }
-    }
+    return uniqueBorrowers;}
 }
