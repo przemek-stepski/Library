@@ -9,22 +9,23 @@ public class AppController {
     protected void startApp() {
         System.out.println("To start app please type path to books catalogue file: ");
         pathToFile = UserInputScanner.scannerString();
-        if (fileIfExist()) {
-            toMenu();
+        if (fileIfExist(pathToFile)) {
+            menu.toMenu();
         } else {
-            System.out.println("You typed wrong path to book catalogue file.");
+            System.out.println("You typed wrong path to books catalogue file.");
             startApp();
         }
     }
 
-    protected static boolean fileIfExist() {
-        File f = new File(pathToFile);
-        return f.isFile();
-    }
+    protected static boolean fileIfExist(String path) {
+        try {
+            File f = new File(path);
+            return f.isFile();
+        } catch (NullPointerException e) {
+            System.out.println("Path to file should not be null");
+            return false;
+        }
 
-    protected void toMenu() {
-        menu.displayMenu();
-        menu.executeCommand(menu.menuChoice());
     }
 }
 

@@ -52,7 +52,6 @@
     "title": "Oryx And Crake",
     "author": "Atwood Margaret",
     "isbn": "0349004064",
-
     "lastBorrowedDate": "2021-08-10",
     "borrower": "Alena"
   },
@@ -73,7 +72,8 @@
     "title": "Pan Tadeusz",
     "author": "Adam Mickiewicz",
     "isbn": "1",
-    "lastBorrowedDate": "0000-01-01"
+    "lastBorrowedDate": "2021-08-18",
+    "borrower": "Przemek Stepski"
   },
   {
     "title": "1",

@@ -35,24 +35,32 @@ public class BookDAO {
         try (Reader reader = new FileReader(pathToFile)) {
             Type bookListType = new TypeToken<ArrayList<Book>>() {
             }.getType();
-            bookList = gson.fromJson(reader, bookListType);
+           return bookList = gson.fromJson(reader, bookListType);
+
         } catch (IOException e) {
             System.out.println("Reading Json file error occurred " + e.getMessage());
-            return null;
+
+        } catch(NullPointerException e) {
+            System.out.println("Path to file should not be null " + e.getMessage());
+
         }
-        return bookList;
+        return null;
     }
 
     public static boolean makeJsonFromList(ArrayList arrayList, String pathToFile) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        try (FileWriter writer = new FileWriter(pathToFile)) {
-            gson.toJson(arrayList, writer);
-            writer.flush();
-            return true;
-
-        } catch (IOException e) {
-            System.out.println("Saving Json file error occurred " + e.getMessage());
+        if (AppController.fileIfExist(pathToFile)) {
+            try (FileWriter writer = new FileWriter(pathToFile)) {
+                gson.toJson(arrayList, writer);
+                writer.flush();
+                return true;
+            } catch (IOException e) {
+                System.out.println("Saving Json file error occurred " + e.getMessage());
+            }catch (NullPointerException e)  {
+                System.out.println("Path to file should not be null" + e.getMessage());
+            }
+            return false;
         }
         return false;
     }

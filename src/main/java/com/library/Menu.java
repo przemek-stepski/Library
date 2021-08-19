@@ -23,58 +23,55 @@ public class Menu {
     }
 
     protected void executeCommand(String choice) {
-        AppController appController = new AppController();
         BookRepository bookRepository = new BookRepository();
         String path = AppController.pathToFile;
 
         switch (choice) {
             case "1":
                 bookRepository.addBook(path);
-                appController.toMenu();
                 break;
 
             case "2":
                 bookRepository.deleteBook(path);
-                appController.toMenu();
                 break;
 
             case "3":
                 bookRepository.findBookByTitle(path);
-                appController.toMenu();
                 break;
 
             case "4":
                 bookRepository.findBookByAuthor(path);
-                appController.toMenu();
                 break;
 
             case "5":
                 bookRepository.findBookByIsbn(path);
-                appController.toMenu();
                 break;
 
             case "6":
                 bookRepository.findBooksNotBorrowed(path);
-                appController.toMenu();
                 break;
 
             case "7":
                 bookRepository.borrowBook(path);
-                appController.toMenu();
                 break;
 
             case "8":
                 bookRepository.showBorrowers(path);
-                appController.toMenu();
                 break;
 
             case "Q":
                 System.out.println("You have successfully closed app. Thanks for using ;-)");
                 break;
 
-            default:
-                appController.toMenu();
         }
+        if (!choice.equals("Q")) {
+            toMenu();
+        }
+    }
+
+    protected void toMenu() {
+        displayMenu();
+        executeCommand(menuChoice());
     }
 }
 

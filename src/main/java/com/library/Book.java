@@ -14,7 +14,7 @@ public class Book {
         this.author = author;
         this.isbn = ISBN;
         lastBorrowedDate = "0000-01-01";
-        borrower = null;
+        borrower = "never borrowed";
     }
 
     public String getTitle() {
