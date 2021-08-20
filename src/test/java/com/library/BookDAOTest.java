@@ -1,53 +1,80 @@
 package com.library;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BookDAOTest {
 
     Book book1 = new Book("1", "1", "1");
     Book book2 = new Book("2", "2", "2");
     List<Book> testBookList = new ArrayList<>();
+    private static final String PATH = "src/main/resources/katalogTest1.json";
 
-    @Test
-    void testMakeListShouldReturnListOfBooks() {
-        testBookList.add(book1);
-        testBookList.add(book2);
-        String path = "src/main/resources/katalogTest1.json";
+    @BeforeAll
+    static void createTestFile() {
 
-        assertEquals(testBookList, BookDAO.makeListFromJson(path));
+        String fileContent = "[\n" +
+                "  {\n" +
+                "    \"title\": \"1\",\n" +
+                "    \"author\": \"1\",\n" +
+                "    \"isbn\": \"1\",\n" +
+                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
+                "    \"borrower\": \"never borrowed\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"2\",\n" +
+                "    \"author\": \"2\",\n" +
+                "    \"isbn\": \"2\",\n" +
+                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
+                "    \"borrower\": \"never borrowed\"\n" +
+                "  }\n" +
+                "]";
+        try {
+            FileWriter fileWriter = new FileWriter(PATH);
+            fileWriter.write(fileContent);
+            fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    void testMakeListShouldReturnNullIfWrongPath() {
+    void testMakeListShouldReturnListOfBooks() throws MyException {
+        addTwoBooksToTestBookList();
+
+        assertEquals(testBookList, BookDAO.makeListFromJson(PATH));
+    }
+
+    @Test
+    void testMakeListShouldThrowMyExceptionIfWrongPath() throws MyException {
         String path = "wrong path to file";
 
-        assertNull(BookDAO.makeListFromJson(path));
+        assertThrows(MyException.class, () -> BookDAO.makeListFromJson(path));
     }
-    @Test
-    void testMakeListShouldReturnNullIfPathull() {
 
-        assertNull(BookDAO.makeListFromJson(null));
+    @Test
+    void testMakeListShouldThrowMyExceptionIfPatNull() throws MyException {
+
+        assertThrows(MyException.class,() -> BookDAO.makeListFromJson(null));
     }
 
     @Test
     void testMakeJsonShouldReturnTrueIfCreatedJsonFile() {
-        testBookList.add(book1);
-        testBookList.add(book2);
-        String path = "src/main/resources/katalogTest2.json";
+        addTwoBooksToTestBookList();
 
-        assertTrue(BookDAO.makeJsonFromList((ArrayList) testBookList, path));
+        assertTrue(BookDAO.makeJsonFromList((ArrayList) testBookList, PATH));
     }
 
     @Test
     void testMakeJsonShouldReturnFalseIfWrongPath() {
-        String path = "wrong path to file2";
+        String path = "wrong path to file";
 
         assertFalse(BookDAO.makeJsonFromList((ArrayList) testBookList, path));
     }
@@ -56,5 +83,10 @@ class BookDAOTest {
     void testMakeJsonShouldReturnFalseIfPathNull() {
 
         assertFalse(BookDAO.makeJsonFromList((ArrayList) testBookList, null));
+    }
+
+    void addTwoBooksToTestBookList() {
+        testBookList.add(book1);
+        testBookList.add(book2);
     }
 }

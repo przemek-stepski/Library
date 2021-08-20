@@ -25,7 +25,7 @@ public class BookRepository {
         return newBook;
     }
 
-    protected void addBook(String path) {
+    protected void addBook(String path) throws MyException {
         List<Book> listToAddBook = BookDAO.makeListFromJson(path);
         listToAddBook.add(createBook());
 
@@ -33,7 +33,7 @@ public class BookRepository {
         System.out.println("You have successfully added a book!");
     }
 
-    protected boolean deleteBook(String path) {
+    protected boolean deleteBook(String path) throws MyException {
         System.out.println("We will delete the book with typed ISBN if we have one");
         List<Book> listToDeleteBook = BookDAO.makeListFromJson(path);
         List<Book> booksToDelete = findBookByIsbn(path);
@@ -53,7 +53,7 @@ public class BookRepository {
         return false;
     }
 
-    protected List<Book> findBookByAuthor(String path) {
+    protected List<Book> findBookByAuthor(String path) throws MyException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book author and press Enter");
@@ -72,7 +72,7 @@ public class BookRepository {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBookByTitle(String path) {
+    protected List<Book> findBookByTitle(String path) throws MyException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book title and press Enter");
@@ -91,7 +91,7 @@ public class BookRepository {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBookByIsbn(String path) {
+    protected List<Book> findBookByIsbn(String path) throws MyException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book ISBN and press Enter");
@@ -110,7 +110,7 @@ public class BookRepository {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBooksNotBorrowed(String path) {
+    protected List<Book> findBooksNotBorrowed(String path) throws MyException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("We will find books not borrowed in recent weeks. Type a number of weeks and press Enter");
@@ -135,7 +135,7 @@ public class BookRepository {
     }
 
 
-    protected boolean borrowBook(String path) {
+    protected boolean borrowBook(String path) throws MyException {
         System.out.println("Type borrower name and lastname");
         String borrower = UserInputScanner.scannerString();
 
@@ -156,7 +156,7 @@ public class BookRepository {
         return false;
     }
 
-    protected List<String> showBorrowers(String path) {
+    protected List<String> showBorrowers(String path) throws MyException {
         List<Book> booksList = BookDAO.makeListFromJson(path);
         List<String> allBorrowers = new ArrayList<>();
 

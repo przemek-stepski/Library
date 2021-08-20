@@ -64,7 +64,7 @@ class BookRepositoryTest {
     }
 
     @Test
-    void testShowBorrowersShouldReturnListOfUniqueBorrowersAsSublistOfAllBorrowers() {
+    void testShowBorrowersShouldReturnListOfUniqueBorrowersAsSublistOfAllBorrowers() throws MyException {
         String path = "src/main/resources/katalogTest1.json";
 
         List<String> testUniqeBorrowers = new ArrayList<>();

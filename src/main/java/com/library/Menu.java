@@ -22,7 +22,7 @@ public class Menu {
         return scanningClass.scannerString();
     }
 
-    protected void executeCommand(String choice) {
+    protected void executeCommand(String choice) throws MyException {
         BookRepository bookRepository = new BookRepository();
         String path = AppController.pathToFile;
 
@@ -71,7 +71,11 @@ public class Menu {
 
     protected void toMenu() {
         displayMenu();
-        executeCommand(menuChoice());
+        try {
+            executeCommand(menuChoice());
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
     }
 }
 

@@ -29,22 +29,22 @@ public class BookDAO {
 //        return bookList;
 //    }
 
-    public static List<Book> makeListFromJson(String pathToFile) {
+    public static List<Book> makeListFromJson(String pathToFile) throws MyException {
         Gson gson = new Gson();
 
         try (Reader reader = new FileReader(pathToFile)) {
             Type bookListType = new TypeToken<ArrayList<Book>>() {
             }.getType();
-           return bookList = gson.fromJson(reader, bookListType);
+            return bookList = gson.fromJson(reader, bookListType);
 
         } catch (IOException e) {
             System.out.println("Reading Json file error occurred " + e.getMessage());
+            throw new MyException();
 
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             System.out.println("Path to file should not be null " + e.getMessage());
-
+            throw new MyException();
         }
-        return null;
     }
 
     public static boolean makeJsonFromList(ArrayList arrayList, String pathToFile) {
@@ -57,7 +57,7 @@ public class BookDAO {
                 return true;
             } catch (IOException e) {
                 System.out.println("Saving Json file error occurred " + e.getMessage());
-            }catch (NullPointerException e)  {
+            } catch (NullPointerException e) {
                 System.out.println("Path to file should not be null" + e.getMessage());
             }
             return false;
