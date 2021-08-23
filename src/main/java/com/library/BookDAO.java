@@ -29,7 +29,7 @@ public class BookDAO {
 //        return bookList;
 //    }
 
-    public static List<Book> makeListFromJson(String pathToFile) throws MyException {
+    public static List<Book> makeListFromJson(String pathToFile) throws MissingFileException {
         Gson gson = new Gson();
 
         try (Reader reader = new FileReader(pathToFile)) {
@@ -39,11 +39,11 @@ public class BookDAO {
 
         } catch (IOException e) {
             System.out.println("Reading Json file error occurred " + e.getMessage());
-            throw new MyException();
+            throw new MissingFileException();
 
         } catch (NullPointerException e) {
             System.out.println("Path to file should not be null " + e.getMessage());
-            throw new MyException();
+            throw new MissingFileException();
         }
     }
 

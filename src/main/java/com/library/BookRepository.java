@@ -11,29 +11,22 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 public class BookRepository {
     protected Book createBook() {
-        System.out.println("Type a book title and press Enter");
-        String title = UserInputScanner.scannerString();
+        String title = UserInputScanner.getInput("title");
+        String author = UserInputScanner.getInput("author");
+        String isbn = UserInputScanner.getInput("isbn");
 
-        System.out.println("Type a book author and press Enter");
-        String author = UserInputScanner.scannerString();
-
-        System.out.println("Type ISBN and press Enter");
-        String ISBN = UserInputScanner.scannerString();
-
-        Book newBook = new Book(title, author, ISBN);
-
-        return newBook;
+        return new Book(title, author, isbn);
     }
 
-    protected void addBook(String path) throws MyException {
+    protected void addBook(String path, Book bookToAdd) throws MissingFileException {
         List<Book> listToAddBook = BookDAO.makeListFromJson(path);
-        listToAddBook.add(createBook());
+        listToAddBook.add(bookToAdd);
 
         BookDAO.makeJsonFromList((ArrayList) listToAddBook, path);
         System.out.println("You have successfully added a book!");
     }
 
-    protected boolean deleteBook(String path) throws MyException {
+    protected boolean deleteBook(String path) throws MissingFileException {
         System.out.println("We will delete the book with typed ISBN if we have one");
         List<Book> listToDeleteBook = BookDAO.makeListFromJson(path);
         List<Book> booksToDelete = findBookByIsbn(path);
@@ -53,7 +46,7 @@ public class BookRepository {
         return false;
     }
 
-    protected List<Book> findBookByAuthor(String path) throws MyException {
+    protected List<Book> findBookByAuthor(String path) throws MissingFileException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book author and press Enter");
@@ -72,7 +65,7 @@ public class BookRepository {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBookByTitle(String path) throws MyException {
+    protected List<Book> findBookByTitle(String path) throws MissingFileException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book title and press Enter");
@@ -91,7 +84,7 @@ public class BookRepository {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBookByIsbn(String path) throws MyException {
+    protected List<Book> findBookByIsbn(String path) throws MissingFileException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
         System.out.println("Type a book ISBN and press Enter");
@@ -110,10 +103,10 @@ public class BookRepository {
         return listOfFoundBooks;
     }
 
-    protected List<Book> findBooksNotBorrowed(String path) throws MyException {
+    protected List<Book> findBooksNotBorrowed(String path) throws MissingFileException {
         List<Book> listOfFoundBooks = new ArrayList<>();
+        System.out.println("Type number of weeks (to find books not borrowed during that period)");
 
-        System.out.println("We will find books not borrowed in recent weeks. Type a number of weeks and press Enter");
         int numberOfWeeksGiven = UserInputScanner.scannerInt();
         int numberOfDaysGiven = numberOfWeeksGiven * 7;
 
@@ -135,9 +128,8 @@ public class BookRepository {
     }
 
 
-    protected boolean borrowBook(String path) throws MyException {
-        System.out.println("Type borrower name and lastname");
-        String borrower = UserInputScanner.scannerString();
+    protected boolean borrowBook(String path) throws MissingFileException {
+        String borrower = UserInputScanner.getInput("borrower");
 
         List<Book> booksList = BookDAO.makeListFromJson(path);
 
@@ -156,7 +148,7 @@ public class BookRepository {
         return false;
     }
 
-    protected List<String> showBorrowers(String path) throws MyException {
+    protected List<String> showBorrowers(String path) throws MissingFileException {
         List<Book> booksList = BookDAO.makeListFromJson(path);
         List<String> allBorrowers = new ArrayList<>();
 
@@ -175,5 +167,6 @@ public class BookRepository {
                 System.out.println("Borrower " + borrower + " borrowed " + bookNumber + " books");
             }
         }
-    return uniqueBorrowers;}
+        return uniqueBorrowers;
+    }
 }

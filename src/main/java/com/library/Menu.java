@@ -22,13 +22,13 @@ public class Menu {
         return scanningClass.scannerString();
     }
 
-    protected void executeCommand(String choice) throws MyException {
+    protected void executeCommand(String choice) throws MissingFileException {
         BookRepository bookRepository = new BookRepository();
         String path = AppController.pathToFile;
 
         switch (choice) {
             case "1":
-                bookRepository.addBook(path);
+                bookRepository.addBook(path, bookRepository.createBook());
                 break;
 
             case "2":
@@ -73,7 +73,7 @@ public class Menu {
         displayMenu();
         try {
             executeCommand(menuChoice());
-        } catch (MyException e) {
+        } catch (MissingFileException e) {
             e.printStackTrace();
         }
     }

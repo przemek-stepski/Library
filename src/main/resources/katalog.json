@@ -80,5 +80,12 @@
     "author": "1",
     "isbn": "1",
     "lastBorrowedDate": "0000-01-01"
+  },
+  {
+    "title": "testTitle",
+    "author": "testAuthor",
+    "isbn": "1234",
+    "lastBorrowedDate": "0000-01-01",
+    "borrower": "never borrowed"
   }
 ]

@@ -25,7 +25,7 @@ class UserInputScannerTest {
         InputStream input = new ByteArrayInputStream(String.valueOf(testInputInt).getBytes());
         System.setIn(input);
 
-        assertEquals("12", UserInputScanner.scannerString());
+        assertEquals(12, UserInputScanner.scannerInt());
     }
 
 }

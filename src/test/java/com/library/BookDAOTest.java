@@ -1,8 +1,10 @@
 package com.library;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ class BookDAOTest {
     Book book1 = new Book("1", "1", "1");
     Book book2 = new Book("2", "2", "2");
     List<Book> testBookList = new ArrayList<>();
-    private static final String PATH = "src/main/resources/katalogTest1.json";
+    private static final String PATH_TO_TEST_FILE = "src/main/resources/katalogTest1.json";
 
     @BeforeAll
     static void createTestFile() {
@@ -37,7 +39,7 @@ class BookDAOTest {
                 "  }\n" +
                 "]";
         try {
-            FileWriter fileWriter = new FileWriter(PATH);
+            FileWriter fileWriter = new FileWriter(PATH_TO_TEST_FILE);
             fileWriter.write(fileContent);
             fileWriter.flush();
         } catch (IOException e) {
@@ -45,31 +47,37 @@ class BookDAOTest {
         }
     }
 
+    @AfterAll
+    static void deleteTestFile() {
+        File testFile = new File(PATH_TO_TEST_FILE);
+        testFile.delete();
+    }
+
     @Test
-    void testMakeListShouldReturnListOfBooks() throws MyException {
+    void testMakeListShouldReturnListOfBooks() throws MissingFileException {
         addTwoBooksToTestBookList();
 
-        assertEquals(testBookList, BookDAO.makeListFromJson(PATH));
+        assertEquals(testBookList, BookDAO.makeListFromJson(PATH_TO_TEST_FILE));
     }
 
     @Test
-    void testMakeListShouldThrowMyExceptionIfWrongPath() throws MyException {
+    void testMakeListShouldThrowMyExceptionIfWrongPath() throws MissingFileException {
         String path = "wrong path to file";
 
-        assertThrows(MyException.class, () -> BookDAO.makeListFromJson(path));
+        assertThrows(MissingFileException.class, () -> BookDAO.makeListFromJson(path));
     }
 
     @Test
-    void testMakeListShouldThrowMyExceptionIfPatNull() throws MyException {
+    void testMakeListShouldThrowMyExceptionIfPatNull() throws MissingFileException {
 
-        assertThrows(MyException.class,() -> BookDAO.makeListFromJson(null));
+        assertThrows(MissingFileException.class,() -> BookDAO.makeListFromJson(null));
     }
 
     @Test
     void testMakeJsonShouldReturnTrueIfCreatedJsonFile() {
         addTwoBooksToTestBookList();
 
-        assertTrue(BookDAO.makeJsonFromList((ArrayList) testBookList, PATH));
+        assertTrue(BookDAO.makeJsonFromList((ArrayList) testBookList, PATH_TO_TEST_FILE));
     }
 
     @Test
