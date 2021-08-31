@@ -108,14 +108,13 @@ class BookRepositoryTest {
     }
 
     @Test
-    void testShowBorrowersShouldReturnListOfUniqueBorrowersAsSublistOfAllBorrowers() throws MissingFileException {
-        String path = "src/main/resources/katalogTest1.json";
-
+    void testShowBorrowersShouldReturnListOfUniqueBorrowersAsSublistOfAllBorrowers() throws MissingFileException
+    {
         List<String> testUniqeBorrowers = new ArrayList<>();
         testUniqeBorrowers.add("1");
         testUniqeBorrowers.add("2");
 
-        assertEquals( testUniqeBorrowers, bookRepository.showBorrowers(path));
+        assertEquals(testUniqeBorrowers, bookRepository.showBorrowers(PATH_TO_TEST_FILE));
 
     }
 

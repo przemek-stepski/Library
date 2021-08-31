@@ -28,7 +28,12 @@ public class Menu {
 
         switch (choice) {
             case "1":
-                bookRepository.addBook(path, bookRepository.createBook());
+
+                //todo Map z enumami i Stringami jako executor instance;
+                String title = UserInputScanner.getInput("title");
+                String author = UserInputScanner.getInput("author");
+                String isbn = UserInputScanner.getInput("isbn");
+                bookRepository.addBook(path, bookRepository.createBook(title, author, isbn));
                 break;
 
             case "2":
@@ -77,5 +82,6 @@ public class Menu {
             e.printStackTrace();
         }
     }
+
 }
 

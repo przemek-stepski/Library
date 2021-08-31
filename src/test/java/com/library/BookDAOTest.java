@@ -14,34 +14,40 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookDAOTest {
 
-    Book book1 = new Book("1", "1", "1");
-    Book book2 = new Book("2", "2", "2");
+    Book book1 = new Book("T", "A", "1");
+    Book book2 = new Book("TT", "AA", "22");
     List<Book> testBookList = new ArrayList<>();
-    private static final String PATH_TO_TEST_FILE = "src/main/resources/katalogTest1.json";
+    private static final String COMMON_TEST_FILE = "src/main/resources/katalogTestBeforeAll.json";
+    private static final String TEST_FILE = "src/main/resources/katalogTest.json";
 
     @BeforeAll
-    static void createTestFile() {
+    static void createTestFile() throws IOException {
 
         String fileContent = "[\n" +
                 "  {\n" +
-                "    \"title\": \"1\",\n" +
-                "    \"author\": \"1\",\n" +
+                "    \"title\": \"T\",\n" +
+                "    \"author\": \"A\",\n" +
                 "    \"isbn\": \"1\",\n" +
                 "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
                 "    \"borrower\": \"never borrowed\"\n" +
                 "  },\n" +
                 "  {\n" +
-                "    \"title\": \"2\",\n" +
-                "    \"author\": \"2\",\n" +
-                "    \"isbn\": \"2\",\n" +
+                "    \"title\": \"TT\",\n" +
+                "    \"author\": \"AA\",\n" +
+                "    \"isbn\": \"22\",\n" +
                 "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
                 "    \"borrower\": \"never borrowed\"\n" +
                 "  }\n" +
                 "]";
         try {
-            FileWriter fileWriter = new FileWriter(PATH_TO_TEST_FILE);
+            FileWriter fileWriter = new FileWriter(COMMON_TEST_FILE);
             fileWriter.write(fileContent);
             fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            new FileWriter(TEST_FILE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,35 +55,38 @@ class BookDAOTest {
 
     @AfterAll
     static void deleteTestFile() {
-        File testFile = new File(PATH_TO_TEST_FILE);
+        File commonTestFile = new File(COMMON_TEST_FILE);
+        commonTestFile.delete();
+
+        File testFile = new File(TEST_FILE);
         testFile.delete();
     }
 
     @Test
-    void testMakeListShouldReturnListOfBooks() throws MissingFileException {
+    void testMakeListShouldReturnEqualListOfBooks() throws MissingFileException {
         addTwoBooksToTestBookList();
 
-        assertEquals(testBookList, BookDAO.makeListFromJson(PATH_TO_TEST_FILE));
+        assertEquals(testBookList, BookDAO.makeListFromJson(COMMON_TEST_FILE));
     }
 
     @Test
-    void testMakeListShouldThrowMyExceptionIfWrongPath() throws MissingFileException {
+    void testMakeListShouldThrowMyExceptionIfWrongPath() {
         String path = "wrong path to file";
 
         assertThrows(MissingFileException.class, () -> BookDAO.makeListFromJson(path));
     }
 
     @Test
-    void testMakeListShouldThrowMyExceptionIfPatNull() throws MissingFileException {
+    void testMakeListShouldThrowMyExceptionIfPatNull() {
 
-        assertThrows(MissingFileException.class,() -> BookDAO.makeListFromJson(null));
+        assertThrows(MissingFileException.class, () -> BookDAO.makeListFromJson(null));
     }
 
     @Test
     void testMakeJsonShouldReturnTrueIfCreatedJsonFile() {
         addTwoBooksToTestBookList();
 
-        assertTrue(BookDAO.makeJsonFromList((ArrayList) testBookList, PATH_TO_TEST_FILE));
+        assertTrue(BookDAO.makeJsonFromList((ArrayList) testBookList, TEST_FILE));
     }
 
     @Test

@@ -10,11 +10,8 @@ import static java.time.LocalDate.now;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class BookRepository {
-    protected Book createBook() {
-        String title = UserInputScanner.getInput("title");
-        String author = UserInputScanner.getInput("author");
-        String isbn = UserInputScanner.getInput("isbn");
 
+    protected Book createBook(String title, String author, String isbn) {
         return new Book(title, author, isbn);
     }
 
@@ -23,7 +20,10 @@ public class BookRepository {
         listToAddBook.add(bookToAdd);
 
         BookDAO.makeJsonFromList((ArrayList) listToAddBook, path);
+        //todo
+        // logger że się dodała książka do tego pliku
         System.out.println("You have successfully added a book!");
+
     }
 
     protected boolean deleteBook(String path) throws MissingFileException {

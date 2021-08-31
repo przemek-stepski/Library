@@ -16,19 +16,6 @@ public class BookDAO {
 
     static List<Book> bookList;
 
-//    public static List<Book> makeListFromJson() {
-//        Gson gson = new Gson();
-//
-//        try (Reader reader = new FileReader(pathToFile)) {
-//            Type bookListType = new TypeToken<ArrayList<Book>>() {
-//            }.getType();
-//            bookList = gson.fromJson(reader, bookListType);
-//        } catch (IOException e) {
-//            System.out.println("Reading Json file error occurred " + e.getMessage());
-//        }
-//        return bookList;
-//    }
-
     public static List<Book> makeListFromJson(String pathToFile) throws MissingFileException {
         Gson gson = new Gson();
 

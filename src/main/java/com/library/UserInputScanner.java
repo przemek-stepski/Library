@@ -14,6 +14,8 @@ public class UserInputScanner {
         return scanner.nextInt();
     }
 
+    //todo move getInput to Executor class
+
     public static String getInput(String input) {
         switch (input) {
             case "title":
@@ -35,4 +37,6 @@ public class UserInputScanner {
         }
         return scannerString();
     }
+
+
 }
