@@ -1,6 +1,16 @@
 package com.library;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class Menu {
+
+    private static final Logger LOGER = LogManager.getLogger(Menu.class);
 
     protected void displayMenu() {
         System.out.println("********************************************************************");
@@ -17,54 +27,67 @@ public class Menu {
         System.out.println("********************************************************************");
     }
 
+    UserInputScanner userInputScanner = new UserInputScanner();
+    Executor executor = new Executor();
+    MenuOptions menuOptions;
+
+
     protected String menuChoice() {
-        UserInputScanner scanningClass = new UserInputScanner();
-        return scanningClass.scannerString();
+        return userInputScanner.scannerString();
     }
 
+    //todo Map z enumami i Stringami jako executor instance;
     protected void executeCommand(String choice) throws MissingFileException {
         BookRepository bookRepository = new BookRepository();
         String path = AppController.pathToFile;
 
-        switch (choice) {
-            case "1":
+        Map<String, Enum> choiceMap = new HashMap<>();
+        choiceMap.put("1", menuOptions.ADD);
+        choiceMap.put("2", menuOptions.DELETE);
+        choiceMap.put("3", menuOptions.FIND_BY_TITLE);
+        choiceMap.put("4", menuOptions.FIND_BY_AUTHOR);
+        choiceMap.put("5", menuOptions.FIND_BY_ISBN);
+        choiceMap.put("6", menuOptions.FIND_NOT_BORROWED_LAST_WEEKS);
+        choiceMap.put("7", menuOptions.BORROW);
+        choiceMap.put("8", menuOptions.DISPLAY_LIST_OF_BORROWERS);
+        choiceMap.put("Q", menuOptions.QUIT);
 
-                //todo Map z enumami i Stringami jako executor instance;
-                String title = UserInputScanner.getInput("title");
-                String author = UserInputScanner.getInput("author");
-                String isbn = UserInputScanner.getInput("isbn");
-                bookRepository.addBook(path, bookRepository.createBook(title, author, isbn));
+        Map<String, Enum> choiceMapImmutable = Collections.unmodifiableMap(new LinkedHashMap<>(choiceMap));
+
+        switch (menuOptions = (MenuOptions) choiceMapImmutable.get(choice)) {
+            case ADD:
+                bookRepository.addBook(path, executor.createBook());
                 break;
 
-            case "2":
+            case DELETE:
                 bookRepository.deleteBook(path);
                 break;
 
-            case "3":
+            case FIND_BY_TITLE:
                 bookRepository.findBookByTitle(path);
                 break;
 
-            case "4":
+            case FIND_BY_AUTHOR:
                 bookRepository.findBookByAuthor(path);
                 break;
 
-            case "5":
+            case FIND_BY_ISBN:
                 bookRepository.findBookByIsbn(path);
                 break;
 
-            case "6":
+            case FIND_NOT_BORROWED_LAST_WEEKS:
                 bookRepository.findBooksNotBorrowed(path);
                 break;
 
-            case "7":
+            case BORROW:
                 bookRepository.borrowBook(path);
                 break;
 
-            case "8":
+            case DISPLAY_LIST_OF_BORROWERS:
                 bookRepository.showBorrowers(path);
                 break;
 
-            case "Q":
+            case QUIT:
                 System.out.println("You have successfully closed app. Thanks for using ;-)");
                 break;
 
@@ -79,6 +102,7 @@ public class Menu {
         try {
             executeCommand(menuChoice());
         } catch (MissingFileException e) {
+            LOGER.info("inform from toMenu" + e);
             e.printStackTrace();
         }
     }

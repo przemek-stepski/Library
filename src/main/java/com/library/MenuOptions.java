@@ -1,0 +1,7 @@
+package com.library;
+
+public enum MenuOptions {
+    ADD, DELETE, FIND_BY_TITLE, FIND_BY_AUTHOR,
+    FIND_BY_ISBN, FIND_NOT_BORROWED_LAST_WEEKS, BORROW,
+    DISPLAY_LIST_OF_BORROWERS, QUIT
+}

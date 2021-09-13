@@ -11,6 +11,7 @@ public class AppController {
         pathToFile = UserInputScanner.scannerString();
         if (fileIfExist(pathToFile)) {
             menu.toMenu();
+
         } else {
             System.out.println("You typed wrong path to books catalogue file.");
             startApp();
@@ -22,10 +23,8 @@ public class AppController {
             File f = new File(path);
             return f.isFile();
         } catch (NullPointerException e) {
-            System.out.println("Path to file should not be null");
-            return false;
+            System.out.println(e.getMessage());
         }
-
+        return false;
     }
 }
-

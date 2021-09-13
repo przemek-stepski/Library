@@ -1,5 +1,8 @@
 package com.library;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,19 +12,26 @@ import java.util.stream.Collectors;
 import static java.time.LocalDate.now;
 import static java.time.temporal.ChronoUnit.DAYS;
 
+
 public class BookRepository {
 
-    protected Book createBook(String title, String author, String isbn) {
-        return new Book(title, author, isbn);
-    }
+    private static final Logger LOGGER = LogManager.getLogger(BookRepository.class);
+
+    Executor executor = new Executor();
 
     protected void addBook(String path, Book bookToAdd) throws MissingFileException {
         List<Book> listToAddBook = BookDAO.makeListFromJson(path);
         listToAddBook.add(bookToAdd);
 
         BookDAO.makeJsonFromList((ArrayList) listToAddBook, path);
-        //todo
-        // logger że się dodała książka do tego pliku
+        LOGGER.info("Info from addBook - You have successfully added a book!");
+
+        LOGGER.trace("Logger trace message");
+        LOGGER.debug("Logger debug message");
+        LOGGER.info("Logger info message");
+        LOGGER.warn("Logger warn message");
+        LOGGER.error("Logger error message");
+
         System.out.println("You have successfully added a book!");
 
     }
@@ -49,16 +59,15 @@ public class BookRepository {
     protected List<Book> findBookByAuthor(String path) throws MissingFileException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
-        System.out.println("Type a book author and press Enter");
-        String author = UserInputScanner.scannerString();
+        String author = executor.getInput(InputOptions.AUTHOR);
         List<Book> listToFindBook = BookDAO.makeListFromJson(path);
         for (Book b : listToFindBook)
             if (b.getAuthor().equals(author)) {
                 listOfFoundBooks.add(b);
             }
         if (listOfFoundBooks.size() > 0) {
-            System.out.println("We have such a books from author " + author);
-            System.out.println(listOfFoundBooks);
+            System.out.println("We have " + listOfFoundBooks.size() + " books from author " + author + ": \n");
+            Printer.printBookFromList(listOfFoundBooks);
         } else {
             System.out.println("We do not have books by this author in our collection");
         }
@@ -68,16 +77,15 @@ public class BookRepository {
     protected List<Book> findBookByTitle(String path) throws MissingFileException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
-        System.out.println("Type a book title and press Enter");
-        String title = UserInputScanner.scannerString();
+        String title = executor.getInput(InputOptions.TITLE);
         List<Book> listToFindBook = BookDAO.makeListFromJson(path);
         for (Book b : listToFindBook)
             if (b.getTitle().equals(title)) {
                 listOfFoundBooks.add(b);
             }
         if (listOfFoundBooks.size() > 0) {
-            System.out.println("We have such a books with title \"" + title + "\"");
-            System.out.println(listOfFoundBooks);
+            System.out.println("We have " + listOfFoundBooks.size() + " books with title \"" + title + "\": \n");
+            Printer.printBookFromList(listOfFoundBooks);
         } else {
             System.out.println("We do not have books with this title in our collection");
         }
@@ -87,8 +95,7 @@ public class BookRepository {
     protected List<Book> findBookByIsbn(String path) throws MissingFileException {
         List<Book> listOfFoundBooks = new ArrayList<>();
 
-        System.out.println("Type a book ISBN and press Enter");
-        String isbn = UserInputScanner.scannerString();
+        String isbn = executor.getInput(InputOptions.ISBN);
         List<Book> listToFindBook = BookDAO.makeListFromJson(path);
         for (Book b : listToFindBook)
             if ((b.getIsbn().replaceAll("[- ]", "")).equals(isbn.replaceAll("[- ]", ""))) {
@@ -96,7 +103,7 @@ public class BookRepository {
             }
         if (listOfFoundBooks.size() > 0) {
             System.out.println("We have such a books with ISBN \"" + isbn + "\"");
-            System.out.println(listOfFoundBooks);
+            Printer.printBookFromList(listOfFoundBooks);
         } else {
             System.out.println("We do not have books with this ISBN in our collection");
         }
@@ -104,7 +111,7 @@ public class BookRepository {
     }
 
     protected List<Book> findBooksNotBorrowed(String path) throws MissingFileException {
-        List<Book> listOfFoundBooks = new ArrayList<>();
+        List<Book> listOfFoundBooks = new ArrayList<Book>();
         System.out.println("Type number of weeks (to find books not borrowed during that period)");
 
         int numberOfWeeksGiven = UserInputScanner.scannerInt();
@@ -120,7 +127,7 @@ public class BookRepository {
         }
         if (listOfFoundBooks.size() > 0) {
             System.out.println("We have such a books not borrowed within last " + numberOfWeeksGiven + " weeks");
-            System.out.println(listOfFoundBooks);
+            Printer.printBookFromList(listOfFoundBooks);
         } else {
             System.out.println("We do not have books not borrowed within last " + numberOfWeeksGiven + " weeks");
         }
@@ -129,7 +136,7 @@ public class BookRepository {
 
 
     protected boolean borrowBook(String path) throws MissingFileException {
-        String borrower = UserInputScanner.getInput("borrower");
+        String borrower = executor.getInput(InputOptions.BORROWER);
 
         List<Book> booksList = BookDAO.makeListFromJson(path);
 

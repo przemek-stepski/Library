@@ -2,7 +2,7 @@ package com.library;
 
 import java.util.Objects;
 
-public class Book {
+public class Book implements Comparable<Book>{
     private final String title;
     private final String author;
     private final String isbn;
@@ -68,5 +68,10 @@ public class Book {
                 ", lastBorrowedDate='" + lastBorrowedDate + '\'' +
                 ", borrower='" + borrower + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Book book) {
+        return getIsbn().compareTo(book.isbn);
     }
 }
