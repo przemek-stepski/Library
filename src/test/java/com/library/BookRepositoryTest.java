@@ -16,15 +16,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookRepositoryTest {
 
-    Book book1 = new Book("1", "1", "1");
-    Book book2 = new Book("2", "2", "2");
-    List<Book> testBookList = new ArrayList<>();
+    private Book book1 = new Book("1", "1", "1");
+    private Book book2 = new Book("2", "2", "2");
+    private List<Book> testBookList = new ArrayList<>();
 
-    BookRepository bookRepository = new BookRepository();
+    private UserInputScanner userInputScanner;
+
+    private BookRepository bookRepository;
     private static final String PATH_TO_TEST_FILE = "src/main/resources/katalogTest.json";
 
+    void setupInputForTest(String userInput) {
+        InputStream input = new ByteArrayInputStream(userInput.getBytes());
+        System.setIn(input);
+        userInputScanner = new UserInputScanner();
+        bookRepository = new BookRepository(userInputScanner);
+    }
+
     @BeforeEach
-    void createTestFile() throws IOException {
+    void setUp() {
+        userInputScanner = new UserInputScanner();
+        bookRepository = new BookRepository(userInputScanner);
+    }
+
+    @BeforeEach
+    void createTestFile() {
 
         String fileContent = "[\n" +
                 "  {\n" +
@@ -57,25 +72,19 @@ class BookRepositoryTest {
         testFile.delete();
     }
 
-    //    @Test
-//    void testCreateBookShouldReturnNewBook() {
-//        BookRepository bookRepository = new BookRepository();
-//        Book testBook = new Book("Java", "Josh Bloch", "1234");
-//
-//        String testInputTitle = "Java";
-//        InputStream input = new ByteArrayInputStream(testInputTitle.getBytes());
-//        System.setIn(input);
-//
-//        String testInputAuthor = "Josh Bloch";
-//        InputStream inputAuthor = new ByteArrayInputStream(testInputAuthor.getBytes());
-//        System.setIn(inputAuthor);
-//
-//        String testInputIsbn = "1234";
-//        InputStream inputIsbn = new ByteArrayInputStream(testInputIsbn.getBytes());
-//        System.setIn(inputIsbn);
-//
-//        assertEquals(testBook, bookRepository.createBook());
-//    }
+    @Test
+    void testCreateBookShouldReturnNewBook() {
+        Book testBook = new Book("Java", "Josh Bloch", "1234");
+
+        String testInputTitle = "Java";
+        String testInputAuthor = "Josh Bloch";
+        String testInputIsbn = "1234";
+        setupInputForTest(testInputTitle + "\n" + testInputAuthor + "\n" + testInputIsbn);
+
+        Executor executor = new Executor(userInputScanner);
+
+        assertEquals(testBook, executor.createBook());
+    }
 
     @Test
     void testAddBookShouldResultJsonFileWithAddedBook() throws IOException, MissingFileException {
@@ -106,8 +115,8 @@ class BookRepositoryTest {
         new FileWriter(pathTest);
 
         assertThrows(NullPointerException.class, () -> bookRepository.addBook(pathTest, book1));
-        File testFile = new File(pathTest);
-        testFile.delete();
+
+        new File(pathTest).delete();
     }
 
     @Test
@@ -140,8 +149,7 @@ class BookRepositoryTest {
     @Test
     void testDeleteBookShouldReturnTrueIfBookDeleted() throws MissingFileException {
         String testInputIsbn = "1";
-        InputStream inputIsbn = new ByteArrayInputStream(testInputIsbn.getBytes());
-        System.setIn(inputIsbn);
+        setupInputForTest(testInputIsbn);
 
         assertTrue(bookRepository.deleteBook(PATH_TO_TEST_FILE));
     }
@@ -149,8 +157,7 @@ class BookRepositoryTest {
     @Test
     void testDeleteBookShouldReturnFalseIfBookNotInList() throws MissingFileException {
         String testInputIsbn = "7777777";
-        InputStream inputIsbn = new ByteArrayInputStream(testInputIsbn.getBytes());
-        System.setIn(inputIsbn);
+        setupInputForTest(testInputIsbn);
 
         assertFalse(bookRepository.deleteBook(PATH_TO_TEST_FILE));
     }
@@ -176,8 +183,7 @@ class BookRepositoryTest {
         }
 
         String testInputIsbn = "1";
-        InputStream inputIsbn = new ByteArrayInputStream(testInputIsbn.getBytes());
-        System.setIn(inputIsbn);
+        setupInputForTest(testInputIsbn);
 
         try {
             bookRepository.deleteBook(PATH_TO_TEST_FILE);
@@ -201,8 +207,7 @@ class BookRepositoryTest {
         addOneBookToTestBookList();
 
         String testInputTitle = "1";
-        InputStream input = new ByteArrayInputStream(testInputTitle.getBytes());
-        System.setIn(input);
+        setupInputForTest(testInputTitle);
         List testedMethodList = bookRepository.findBookByAuthor(PATH_TO_TEST_FILE);
 
         assertEquals(testBookList.stream().sorted().collect(Collectors.toList()), testedMethodList.stream().sorted().collect(Collectors.toList()));
@@ -211,8 +216,7 @@ class BookRepositoryTest {
     @Test
     void testFindBookByAuthorShouldReturnEmptyListIfAuthorNotInCatalogue() throws MissingFileException {
         String testInputTitle = "wrongAuthor";
-        InputStream input = new ByteArrayInputStream(testInputTitle.getBytes());
-        System.setIn(input);
+        setupInputForTest(testInputTitle);
 
         List testedMethodList = bookRepository.findBookByAuthor(PATH_TO_TEST_FILE);
 
@@ -224,8 +228,7 @@ class BookRepositoryTest {
         addOneBookToTestBookList();
 
         String testInputAuthor = "1";
-        InputStream inputStream = new ByteArrayInputStream(testInputAuthor.getBytes());
-        System.setIn(inputStream);
+        setupInputForTest(testInputAuthor);
 
         List testedMethodList = bookRepository.findBookByAuthor(PATH_TO_TEST_FILE);
 
@@ -235,8 +238,7 @@ class BookRepositoryTest {
     @Test
     void testFindBookByTitleShouldReturnEmptyListIfTitleNotInCatalogue() throws MissingFileException {
         String testInputAuthor = "wrongTitle";
-        InputStream inputStream = new ByteArrayInputStream(testInputAuthor.getBytes());
-        System.setIn(inputStream);
+        setupInputForTest(testInputAuthor);
 
         List testedMethodList = bookRepository.findBookByAuthor(PATH_TO_TEST_FILE);
 
@@ -244,12 +246,11 @@ class BookRepositoryTest {
     }
 
     @Test
-    void findBookByIsbnShouldReturnListOfBooks() throws MissingFileException {
+    void testFindBookByIsbnShouldReturnListOfBooks() throws MissingFileException {
         addOneBookToTestBookList();
 
         String testInputIsbn = "1";
-        InputStream inputStream = new ByteArrayInputStream(testInputIsbn.getBytes());
-        System.setIn(inputStream);
+        setupInputForTest(testInputIsbn);
 
         List testedMethodList = bookRepository.findBookByIsbn(PATH_TO_TEST_FILE);
 
@@ -257,10 +258,9 @@ class BookRepositoryTest {
     }
 
     @Test
-    void findBookByIsbnShouldReturnEmptyLstIfIsbnNotInCatalogue() throws MissingFileException {
+    void testFindBookByIsbnShouldReturnEmptyLstIfIsbnNotInCatalogue() throws MissingFileException {
         String testInputIsbn = "wrongIsbn";
-        InputStream inputStream = new ByteArrayInputStream(testInputIsbn.getBytes());
-        System.setIn(inputStream);
+        setupInputForTest(testInputIsbn);
 
         List testedMethodList = bookRepository.findBookByIsbn(PATH_TO_TEST_FILE);
 
@@ -268,12 +268,11 @@ class BookRepositoryTest {
     }
 
     @Test
-    void findBooksNotBorrowedShouldReturnListOfBooksNeverBorrowed() throws MissingFileException {
+    void testFindBooksNotBorrowedShouldReturnListOfBooksNeverBorrowed() throws MissingFileException {
         addTwoBooksToTestBookList();
 
         String testInputWeeksNumber = "1";
-        InputStream inputStream = new ByteArrayInputStream(testInputWeeksNumber.getBytes());
-        System.setIn(inputStream);
+        setupInputForTest(testInputWeeksNumber);
 
         List testedMethodList = bookRepository.findBooksNotBorrowed(PATH_TO_TEST_FILE);
 
@@ -281,7 +280,7 @@ class BookRepositoryTest {
     }
 
     @Test
-    void findBooksNotBorrowedShouldReturnListOfNotBorrowedBooksInLastWeek() throws MissingFileException {
+    void testFindBooksNotBorrowedShouldReturnListOfNotBorrowedBooksInLastWeek() throws MissingFileException {
         String pathTest = "src/main/resources/test.json";
         String lastBorrowDate = LocalDate.now().toString();
 
@@ -311,8 +310,8 @@ class BookRepositoryTest {
 
         addOneBookToTestBookList();
 
-        InputStream inputStream = new ByteArrayInputStream(("1").getBytes());
-        System.setIn(inputStream);
+        String testInputWeeksNumber = "1";
+        setupInputForTest(testInputWeeksNumber);
 
         assertEquals(testBookList, bookRepository.findBooksNotBorrowed(pathTest));
 
@@ -320,7 +319,7 @@ class BookRepositoryTest {
     }
 
     @Test
-    void findBooksNotBorrowedShouldReturnEmptyListIfAllBooksWasBorrowedInLastWeek() throws MissingFileException {
+    void testFindBooksNotBorrowedShouldReturnEmptyListIfAllBooksWasBorrowedInLastWeek() throws MissingFileException {
         String pathTest = "src/main/resources/test.json";
         String lastBorrowDate = LocalDate.now().toString();
 
@@ -349,90 +348,151 @@ class BookRepositoryTest {
         }
 
 
-        InputStream inputStream = new ByteArrayInputStream("1".getBytes());
-        System.setIn(inputStream);
+        String testInputWeeksNumber = "1";
+        setupInputForTest(testInputWeeksNumber);
 
         assertTrue(bookRepository.findBooksNotBorrowed(pathTest).isEmpty());
 
         new File(pathTest).delete();
     }
 
-//    @Test
-//    void borrowBook() throws IOException, MissingFileException {
-//        String pathTest = "src/main/resources/test.json";
-//        String fileContent = "[\n" +
-//                "  {\n" +
-//                "    \"author\": \"1\",\n" +
-//                "    \"title\": \"1\",\n" +
-//                "    \"isbn\": \"1\",\n" +
-//                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
-//                "    \"borrower\": \"never borrowed\"\n" +
-//                "  },\n" +
-//                "  {\n" +
-//                "    \"title\": \"2\",\n" +
-//                "    \"author\": \"2\",\n" +
-//                "    \"isbn\": \"2\",\n" +
-//                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
-//                "    \"borrower\": \"never borrowed\"\n" +
-//                "  }\n" +
-//                "]";
-//        try {
-//            FileWriter fileWriter = new FileWriter(pathTest);
-//            fileWriter.write(fileContent);
-//            fileWriter.flush();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        String pathTestResultFile = "src/main/resources/testResultFile.json";
-//        String borrower = "Przemek Stepski";
-//        String lastBorrowDate = LocalDate.now().toString();
-//        String fileContentResultFile = "[\n" +
-//                "  {\n" +
-//                "    \"author\": \"1\",\n" +
-//                "    \"title\": \"1\",\n" +
-//                "    \"isbn\": \"1\",\n" +
-//                "    \"lastBorrowedDate\": \"" + lastBorrowDate + "\",\n" +
-//                "    \"borrower\": \"" + borrower + "d\"\n" +
-//                "  },\n" +
-//                "  {\n" +
-//                "    \"title\": \"2\",\n" +
-//                "    \"author\": \"2\",\n" +
-//                "    \"isbn\": \"2\",\n" +
-//                "    \"lastBorrowedDate\": \"" + lastBorrowDate + "\",\n" +
-//                "    \"borrower\": \"" + borrower + "d\"\n" +
-//                "  }\n" +
-//                "]";
-//        try {
-//            FileWriter fileWriter = new FileWriter(pathTestResultFile);
-//            fileWriter.write(fileContentResultFile);
-//            fileWriter.flush();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        InputStream inputStream = new ByteArrayInputStream(borrower.getBytes());
-//        System.setIn(inputStream);
-//
-//        assertTrue(bookRepository.borrowBook(pathTest));
-//
-//        try {
-//            bookRepository.borrowBook(pathTest);
-//        } catch (MissingFileException e) {
-//            e.printStackTrace();
-//        }
-//
-//        String stringFromFile1 = new String(Files.readAllBytes(Paths.get(pathTest)));
-//        String stringFromFile2 = new String(Files.readAllBytes(Paths.get(pathTestResultFile)));
-//
-//        JsonElement jsonElement1 = JsonParser.parseString(stringFromFile1);
-//        JsonElement jsonElement2 = JsonParser.parseString(stringFromFile2);
-//
-//        assertEquals(jsonElement1, jsonElement2);
-//
-//        new File(pathTest).delete();
-//        new File(pathTestResultFile).delete();
-//    }
+    @Test
+    void testBorrowBookShouldReturnTruIfBookSuccessfullyBorrowed() throws MissingFileException {
+        String pathTest = "src/main/resources/test.json";
+        String fileContent = "[\n" +
+                "  {\n" +
+                "    \"author\": \"1\",\n" +
+                "    \"title\": \"1\",\n" +
+                "    \"isbn\": \"1\",\n" +
+                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
+                "    \"borrower\": \"never borrowed\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"2\",\n" +
+                "    \"author\": \"2\",\n" +
+                "    \"isbn\": \"2\",\n" +
+                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
+                "    \"borrower\": \"never borrowed\"\n" +
+                "  }\n" +
+                "]";
+        try {
+            FileWriter fileWriter = new FileWriter(pathTest);
+            fileWriter.write(fileContent);
+            fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String pathTestResultFile = "src/main/resources/testResultFile.json";
+        String borrower = "Przemek Stepski";
+        String isbn = "1";
+        String lastBorrowDate = LocalDate.now().toString();
+        String fileContentResultFile = "[\n" +
+                "  {\n" +
+                "    \"author\": \"1\",\n" +
+                "    \"title\": \"1\",\n" +
+                "    \"isbn\": \"1\",\n" +
+                "    \"lastBorrowedDate\": \"" + lastBorrowDate + "\",\n" +
+                "    \"borrower\": \"" + borrower + "d\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"2\",\n" +
+                "    \"author\": \"2\",\n" +
+                "    \"isbn\": \"2\",\n" +
+                "    \"lastBorrowedDate\": \"" + lastBorrowDate + "\",\n" +
+                "    \"borrower\": \"" + borrower + "d\"\n" +
+                "  }\n" +
+                "]";
+        try {
+            FileWriter fileWriter = new FileWriter(pathTestResultFile);
+            fileWriter.write(fileContentResultFile);
+            fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String userTestInput = borrower + "\n" + isbn;
+        setupInputForTest(userTestInput);
+
+        assertTrue(bookRepository.borrowBook(pathTest));
+
+        new File(pathTest).delete();
+        new File(pathTestResultFile).delete();
+    }
+
+    @Test
+    void testBorrowBookShouldReturnJsonWithBorrowedBook() throws IOException {
+        String pathTest = "src/main/resources/test.json";
+        String fileContent = "[\n" +
+                "  {\n" +
+                "    \"author\": \"1\",\n" +
+                "    \"title\": \"1\",\n" +
+                "    \"isbn\": \"1\",\n" +
+                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
+                "    \"borrower\": \"never borrowed\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"2\",\n" +
+                "    \"author\": \"2\",\n" +
+                "    \"isbn\": \"2\",\n" +
+                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
+                "    \"borrower\": \"never borrowed\"\n" +
+                "  }\n" +
+                "]";
+        try {
+            FileWriter fileWriter = new FileWriter(pathTest);
+            fileWriter.write(fileContent);
+            fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String pathTestResultFile = "src/main/resources/testResultFile.json";
+        String borrower = "Przemek Stepski";
+        String isbn = "1";
+        String lastBorrowDate = LocalDate.now().toString();
+        String fileContentResultFile = "[\n" +
+                "  {\n" +
+                "    \"author\": \"1\",\n" +
+                "    \"title\": \"1\",\n" +
+                "    \"isbn\": \"1\",\n" +
+                "    \"lastBorrowedDate\": \"" + lastBorrowDate + "\",\n" +
+                "    \"borrower\": \"" + borrower + "\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"title\": \"2\",\n" +
+                "    \"author\": \"2\",\n" +
+                "    \"isbn\": \"2\",\n" +
+                "    \"lastBorrowedDate\": \"0000-01-01\",\n" +
+                "    \"borrower\": \"never borrowed\"\n" +
+                "  }\n" +
+                "]";
+        try {
+            FileWriter fileWriter = new FileWriter(pathTestResultFile);
+            fileWriter.write(fileContentResultFile);
+            fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            setupInputForTest(borrower + "\n" + isbn);
+            bookRepository.borrowBook(pathTest);
+        } catch (MissingFileException e) {
+            e.printStackTrace();
+        }
+
+        String stringFromFile1 = new String(Files.readAllBytes(Paths.get(pathTest)));
+        String stringFromFile2 = new String(Files.readAllBytes(Paths.get(pathTestResultFile)));
+
+        JsonElement jsonElement1 = JsonParser.parseString(stringFromFile1);
+        JsonElement jsonElement2 = JsonParser.parseString(stringFromFile2);
+
+        assertEquals(jsonElement1, jsonElement2);
+
+        new File(pathTest).delete();
+        new File(pathTestResultFile).delete();
+    }
 
     @Test
     void testShowBorrowersShouldReturnListOfUniqueBorrowersAsSublistOfAllBorrowers() throws MissingFileException {

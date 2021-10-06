@@ -3,13 +3,14 @@ package com.library;
 import java.util.Scanner;
 
 public class UserInputScanner {
-    public static String scannerString() {
-        Scanner scanner = new Scanner(System.in);
+
+    Scanner scanner = new Scanner(System.in);
+
+    public String scannerString() {
         return scanner.nextLine();
     }
 
-    public static Integer scannerInt() {
-        Scanner scanner = new Scanner(System.in);
+    public Integer scannerInt() {
         return scanner.nextInt();
     }
 }

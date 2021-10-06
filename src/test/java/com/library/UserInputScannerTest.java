@@ -1,6 +1,5 @@
 package com.library;
 
-
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -9,23 +8,28 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserInputScannerTest {
+        private UserInputScanner userInputScanner;
+
+    void setUpTestForInput(String userInput) {
+        InputStream input = new ByteArrayInputStream(userInput.getBytes());
+        System.setIn(input);
+        userInputScanner = new UserInputScanner();
+    }
 
     @Test
     void testScannerStringShouldReturnTestInputString() {
         String testInputString = "Java";
-        InputStream input = new ByteArrayInputStream(testInputString.getBytes());
-        System.setIn(input);
+        setUpTestForInput(testInputString);
 
-        assertEquals("Java", UserInputScanner.scannerString());
+        assertEquals("Java", userInputScanner.scannerString());
     }
 
     @Test
     void testScannerIntShouldReturnTestInputInt() {
-        int testInputInt = 12;
-        InputStream input = new ByteArrayInputStream(String.valueOf(testInputInt).getBytes());
-        System.setIn(input);
+        String testInputInt = "12";
+        setUpTestForInput(testInputInt);
 
-        assertEquals(12, UserInputScanner.scannerInt());
+        assertEquals(12, userInputScanner.scannerInt());
     }
 
 }

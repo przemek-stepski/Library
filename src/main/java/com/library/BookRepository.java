@@ -15,9 +15,17 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 public class BookRepository {
 
+    private final UserInputScanner userInputScanner;
+
     private static final Logger LOGGER = LogManager.getLogger(BookRepository.class);
 
-    Executor executor = new Executor();
+
+    public BookRepository(UserInputScanner userInputScanner) {
+        this.userInputScanner = userInputScanner;
+        this.executor = new Executor(userInputScanner);
+    }
+
+    private final Executor executor;
 
     protected void addBook(String path, Book bookToAdd) throws MissingFileException {
         List<Book> listToAddBook = BookDAO.makeListFromJson(path);
@@ -114,7 +122,7 @@ public class BookRepository {
         List<Book> listOfFoundBooks = new ArrayList<Book>();
         System.out.println("Type number of weeks (to find books not borrowed during that period)");
 
-        int numberOfWeeksGiven = UserInputScanner.scannerInt();
+        int numberOfWeeksGiven = userInputScanner.scannerInt();
         int numberOfDaysGiven = numberOfWeeksGiven * 7;
 
         List<Book> listToFindBook = BookDAO.makeListFromJson(path);

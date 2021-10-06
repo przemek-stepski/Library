@@ -3,12 +3,15 @@ package com.library;
 import java.io.*;
 
 public class AppController {
-    Menu menu = new Menu();
+    UserInputScanner userInputScanner = new UserInputScanner();
+    Menu menu = new Menu(userInputScanner);
     static String pathToFile;
 
+
     protected void startApp() {
+
         System.out.println("To start app please type path to books catalogue file: ");
-        pathToFile = UserInputScanner.scannerString();
+        pathToFile = userInputScanner.scannerString();
         if (fileIfExist(pathToFile)) {
             menu.toMenu();
 

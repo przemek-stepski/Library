@@ -12,6 +12,11 @@ public class Menu {
 
     private static final Logger LOGER = LogManager.getLogger(Menu.class);
 
+    public Menu(UserInputScanner userInputScanner) {
+        this.userInputScanner = userInputScanner;
+        this.executor = new Executor(userInputScanner);
+    }
+
     protected void displayMenu() {
         System.out.println("********************************************************************");
         System.out.println("Choose an option and press ENTER");
@@ -27,8 +32,10 @@ public class Menu {
         System.out.println("********************************************************************");
     }
 
-    UserInputScanner userInputScanner = new UserInputScanner();
-    Executor executor = new Executor();
+    private final UserInputScanner userInputScanner;
+
+    private final Executor executor;
+
     MenuOptions menuOptions;
 
 
@@ -38,7 +45,7 @@ public class Menu {
 
     //todo Map z enumami i Stringami jako executor instance;
     protected void executeCommand(String choice) throws MissingFileException {
-        BookRepository bookRepository = new BookRepository();
+        BookRepository bookRepository = new BookRepository(userInputScanner);
         String path = AppController.pathToFile;
 
         Map<String, Enum> choiceMap = new HashMap<>();
